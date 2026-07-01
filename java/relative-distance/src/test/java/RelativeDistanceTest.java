@@ -67,7 +67,6 @@ public class RelativeDistanceTest {
         assertThat(rd.degreeOfSeparation("Priya", "Kaito")).isEqualTo(-1);
     }
 
-    @Disabled
     @Test
     @DisplayName("Complex graph, cousins")
     public void testComplexGraphCousins() {
@@ -132,7 +131,6 @@ public class RelativeDistanceTest {
         assertThat(rd.degreeOfSeparation("Dimitri", "Fabio")).isEqualTo(9);
     }
 
-    @Disabled("Remove to run test")
     @Test
     @DisplayName("Complex graph, no shortcut, far removed nephew")
     public void testComplexGraphNoShortcutFarRemovedNephew() {
@@ -196,7 +194,6 @@ public class RelativeDistanceTest {
         assertThat(rd.degreeOfSeparation("Lucia", "Jun")).isEqualTo(14);
     }
 
-    @Disabled("Remove to run test")
     @Test
     @DisplayName(
             "Complex graph, some shortcuts, cross-down and cross-up, " +

@@ -1,37 +1,44 @@
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 class RelativeDistance {
 
-    private final Map<String, List<String>> familyTree;
+    private final Map<String, Set<String>> relationMap = new HashMap<>();
 
     RelativeDistance(Map<String, List<String>> familyTree) {
-        this.familyTree = familyTree;
+
+        familyTree.forEach((parent, children) -> relationMap.put(parent, new HashSet<>(children)));
+
+        familyTree.forEach((parent, children) -> {
+            for (String child : children) {
+                relationMap.computeIfAbsent(child, _ -> new HashSet<>()).add(parent);
+                relationMap.get(child).addAll(children);
+            }
+        });
+
+
     }
 
     int degreeOfSeparation(String personA, String personB) {
-        int degreesOfSeparation = 0;
-
-        for (Map.Entry<String, List<String>> entry : familyTree.entrySet()) {
-            List<String> v = entry.getValue();
-            if (v.containsAll(List.of(personA, personB))) {
-                return 1;
-            }
+        Set<String> visitedPeople = new HashSet<>();
+        List<String> peopleToVisit = new ArrayList<>();
+        Map<String, Integer> distances = new HashMap<>();
+        for (String person : relationMap.keySet()) {
+            distances.put(person, 0);
         }
 
+        peopleToVisit.add(personA);
 
-        List<String> relations = familyTree.get(personA);
-        if (relations != null) {
-            if (relations.contains(personB)) {
-                return 1;
-            }
-            for (int i = 0; i < relations.size(); i++) {
-                String nextOffSpring = relations.get(i);
-                int nextLevel = degreeOfSeparation(nextOffSpring, personB);
-                if (nextLevel == -1) {
-                    //do nowt
-                } else {
-                    return 1 + nextLevel;
+        while (!peopleToVisit.isEmpty()) {
+            String currentPerson = peopleToVisit.removeFirst();
+
+            for (String relation : relationMap.get(currentPerson)) {
+                if (!visitedPeople.contains(relation)) {
+                    visitedPeople.add(relation);
+                    distances.put(relation, distances.get(currentPerson) + 1);
+                    if (relation.equals(personB)) {
+                        return distances.get(personB);
+                    }
+                    peopleToVisit.add(relation);
                 }
             }
         }
